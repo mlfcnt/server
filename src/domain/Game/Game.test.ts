@@ -38,7 +38,7 @@ describe("Game", () => {
       const game = new Game(5, 5, genericPlayer);
       expect(game.players).toStrictEqual([genericPlayer]);
       const newPlayer = new Player("Ella");
-      game.addPlayerToGame(newPlayer);
+      game.addPlayer(newPlayer);
       expect(game.players).toStrictEqual([genericPlayer, newPlayer]);
       expect(Game.getPlayersAcrossAllGames().length).toBe(2);
     });
@@ -46,8 +46,8 @@ describe("Game", () => {
     test("It can have only 2 players max", () => {
       const game = new Game(5, 5, genericPlayer);
       const newPlayer = new Player("Ella");
-      game.addPlayerToGame(newPlayer);
-      expect(() => game.addPlayerToGame(new Player("Nina"))).toThrow(
+      game.addPlayer(newPlayer);
+      expect(() => game.addPlayer(new Player("Nina"))).toThrow(
         new MaxInstancesError(
           "Players for this game",
           Game.MAX_PLAYERS_PER_GAME
@@ -83,6 +83,43 @@ describe("Game", () => {
       expect(Game.getGames().length).toBe(5);
       Game.resetGames();
       expect(Game.getGames().length).toBe(0);
+    });
+  });
+  describe("findGameInstanceById", () => {
+    it("can find it", () => {
+      new Game(5, 5, genericPlayer);
+      new Game(5, 5, genericPlayer);
+      const game = Game.findGameInstanceById(2);
+      expect(game?.id).toBe(2);
+    });
+    it("throws if cannot find it", () => {
+      new Game(5, 5, genericPlayer);
+      expect(() => Game.findGameInstanceById(2)).toThrowError(
+        "Cannot find a game with id 2"
+      );
+    });
+  });
+  describe("status", () => {
+    it("should have a default status of created", () => {
+      expect(new Game(3, 3, genericPlayer).status).toBe("created");
+    });
+    it("should have a status of full when two player are part of it", () => {
+      const game = new Game(3, 3, genericPlayer);
+      expect(game.status).toBe("created");
+      const newPlayer = new Player("Nina");
+      game.addPlayer(newPlayer);
+      expect(game.status).toBe("full");
+    });
+  });
+
+  describe("player roles", () => {
+    it("should be assigned before game starts", () => {
+      const game = new Game(3, 3, genericPlayer);
+      game.addPlayer(new Player("Nina"));
+      const p1Role = game.players[0].role;
+      const p2Role = game.players[1].role;
+      expect(p1Role === "hunter" || p1Role === "haunted").toBeTruthy();
+      expect(p2Role === "hunter" || p2Role === "haunted").toBeTruthy();
     });
   });
 });

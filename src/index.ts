@@ -32,11 +32,13 @@ app.ready((err) => {
       const player = new Player(socket);
       const game = new Game(5, 5, player);
       app.io.emit("game-created", game);
+      app.io.emit("current-games", Game.getGames());
     });
     socket.on("join-game-request", (socket) => {
+      const gameToJoin = Game.findGameInstanceById(socket.game.id);
       const newPlayer = new Player(socket.name);
-      socket.game.players.push(newPlayer);
-      app.io.emit("player-joined-game", game);
+      gameToJoin.addPlayer(newPlayer);
+      app.io.emit("current-games", Game.getGames());
     });
   });
 });
