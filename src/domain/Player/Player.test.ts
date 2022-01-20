@@ -1,19 +1,10 @@
+import { MaxInstancesError } from "../Errors/MaxInstancesError";
 import { MissingFieldError } from "../Errors/MissingFieldError";
 import { Player } from "./Player";
 
 describe("Player", () => {
   beforeEach(() => {
     Player.resetPlayers();
-  });
-
-  describe("creation", () => {
-    test("Max players should be two", () => {
-      expect(() => new Player("Tommy", "hunter")).not.toThrowError();
-      expect(() => new Player("Laurence", "haunted")).not.toThrowError();
-      expect(() => new Player("Ella", "hunter")).toThrowError(
-        "Maximum current player reached (2)"
-      );
-    });
   });
 
   describe("name", () => {
@@ -51,26 +42,28 @@ describe("Player", () => {
     });
   });
 
-  describe("getPlayers", () => {
-    it("should return the current players", () => {
-      new Player("Tommy", "hunter");
-      new Player("Laurence", "haunted");
-      expect(Player.getPlayers()).toStrictEqual([
-        { name: "Tommy", role: "hunter" },
-        { name: "Laurence", role: "haunted" },
-      ]);
+  describe("instances", () => {
+    describe("getPlayers", () => {
+      it("should return the current players", () => {
+        new Player("Tommy", "hunter");
+        new Player("Laurence", "haunted");
+        expect(Player.getPlayers()).toStrictEqual([
+          { name: "Tommy", role: "hunter" },
+          { name: "Laurence", role: "haunted" },
+        ]);
+      });
     });
-  });
-  describe("resetPlayers", () => {
-    it("should reset the current players", () => {
-      new Player("Tommy", "hunter");
-      new Player("Laurence", "haunted");
-      expect(Player.getPlayers()).toStrictEqual([
-        { name: "Tommy", role: "hunter" },
-        { name: "Laurence", role: "haunted" },
-      ]);
-      Player.resetPlayers();
-      expect(Player.getPlayers()).toStrictEqual([]);
+    describe("resetPlayers", () => {
+      it("should reset the current players", () => {
+        new Player("Tommy", "hunter");
+        new Player("Laurence", "haunted");
+        expect(Player.getPlayers()).toStrictEqual([
+          { name: "Tommy", role: "hunter" },
+          { name: "Laurence", role: "haunted" },
+        ]);
+        Player.resetPlayers();
+        expect(Player.getPlayers()).toStrictEqual([]);
+      });
     });
   });
 });

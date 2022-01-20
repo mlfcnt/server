@@ -8,9 +8,6 @@ export class Player {
   role: PlayerRole;
 
   constructor(name: string, role?: PlayerRole) {
-    if (Player.getPlayers().length >= 2) {
-      throw new Error("Maximum current player reached (2)");
-    }
     Assert.isNotNull(name, "Player name");
     this.name = name;
     this.role = this.pickUserRole(role);
